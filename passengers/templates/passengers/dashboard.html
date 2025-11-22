@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Metro Ticket Booking</title>
+  </head>
+  <body>
+    <p>Logged in</p>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+  </body>
+</html>

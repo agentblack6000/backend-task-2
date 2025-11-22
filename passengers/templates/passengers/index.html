@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Metro Ticket Booking</title>
+  </head>
+  <body>
+    <p>Where do you want to go?</p>
+
+    <form action="{% url 'passenger-login' %}" method="get">
+      {% csrf_token %}
+    <button type="submit">Login</button>
+
+    <a href="/admin/login/" class="btn">Admin Login</a>
+
+    </form>
+  </body>
+</html>
