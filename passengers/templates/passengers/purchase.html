@@ -34,6 +34,11 @@
 
         <button type="submit">Purchase</button>
     </form>
+    
+    <form action="{% url 'dashboard' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Back</button>
+    </form>
 
     <form action="{% url 'passenger-logout' %}" method="post">
         {% csrf_token %}

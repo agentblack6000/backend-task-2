@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import Passenger, Ticket, Station
 
 def index(request):
@@ -24,6 +25,9 @@ def dashboard(request):
 def purchase(request):
     passenger = request.user.passenger
     stations = Station.objects.all()
+    context = {
+        "stations": stations,
+    }
 
     if request.method == "POST":
         start_id = request.POST.get("start_station")
@@ -38,16 +42,21 @@ def purchase(request):
         start_station = Station.objects.get(id=start_id)
         dest_station = Station.objects.get(id=dest_id)
 
-        Ticket.objects.create(
-            passenger=passenger,
-            start_station=start_station,
-            destination=dest_station,
-            status="active",
-        )
+        temp_ticket = Ticket(passenger, start_station, dest_station)
+        cost = temp_ticket.calculate_cost(start_station, dest_station)
 
+        if passenger.bank_balance < cost:
+            context["error"] = "Insufficent balance"
+            return render(request, "passengers/purchase.html", context)
+        
+        passenger.bank_balance -= cost
+        passenger.save()
+
+        temp_ticket.status = "active"
+        temp_ticket.save()
+
+        messages.success(request, "Purchase successful")
         return redirect("dashboard")
 
-    context = {
-        "stations": stations,
-    }
+
     return render(request, "passengers/purchase.html", context)

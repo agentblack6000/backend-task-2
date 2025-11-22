@@ -30,8 +30,11 @@ class Ticket(models.Model):
     cost = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
+    def calculate_cost(self, start_station, destination_station):
+        return 10000
+
     def save(self, *args, **kwargs):
-        self.cost = 100
+        self.cost = self.calculate_cost(self.start_station, self.destination)
         super().save(*args, **kwargs)
 
     def __str__(self):
