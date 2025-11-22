@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Metro Ticket Booking</title>
+  </head>
+  <body>
+    <h2>Purchase Ticket</h2>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Start Station</label>
+        <select name="start_station">
+            {% for station in stations %}
+                <option value="{{ station.id }}">{{ station.name }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>Destination Station</label>
+        <select name="destination_station">
+            {% for station in stations %}
+                <option value="{{ station.id }}">{{ station.name }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <button type="submit">Purchase</button>
+    </form>
+
+    <form action="{% url 'passenger-logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+  </body>
+</html>

@@ -5,7 +5,39 @@
     <title>Metro Ticket Booking</title>
   </head>
   <body>
-    <p>Logged in</p>
+    <h3>Your Tickets</h3>
+
+    {% if tickets %}
+    <table border="1">
+        <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Cost</th>
+            <th>Status</th>
+        </tr>
+
+        {% for ticket in tickets %}
+        <tr>
+            <td>{{ ticket.start_station.name }}</td>
+            <td>{{ ticket.destination.name }}</td>
+            <td>{{ ticket.cost }}</td>
+            <td>{{ ticket.get_status_display }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% else %}
+    <p>You have no tickets.</p>
+    {% endif %}
+
+
+    <p>Purchase new tickets</p>
+
+    <form action="{% url 'purchase' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Purchase tickets</button>
+    </form>
+
     <form action="{% url 'passenger-logout' %}" method="post">
         {% csrf_token %}
         <button type="submit">Logout</button>
