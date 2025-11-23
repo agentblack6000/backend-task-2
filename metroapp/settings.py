@@ -77,20 +77,14 @@ WSGI_APPLICATION = "metroapp.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-db_user_name = os.getenv("USER")
-db_user_pwd = os.getenv("PASSWORD")
-db_host = os.getenv("HOST")
-db_port = os.getenv("PORT")
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "metro_app",
-        "USER": db_user_name,
-        "PASSWORD": db_user_pwd,
-        "HOST": db_host,
-        "PORT": db_port,
+        "NAME": os.environ.get("POSTGRES_DB"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", 5432),
     }
 }
 
