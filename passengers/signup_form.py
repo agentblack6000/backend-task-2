@@ -9,13 +9,12 @@ class PassengerSignupForm(forms.ModelForm):
 
     class Meta:
         model = Passenger
-        fields = ["bank_balance"]
+        fields = []
 
     def save(self):
         username = self.cleaned_data["username"]
         email = self.cleaned_data["email"]
         password = self.cleaned_data["password"]
-        bank_balance = self.cleaned_data["bank_balance"]
 
         # Create the Django user
         user = User.objects.create_user(
@@ -27,7 +26,7 @@ class PassengerSignupForm(forms.ModelForm):
         # Create passenger linked to user
         passenger = Passenger.objects.create(
             user=user,
-            bank_balance=bank_balance,
+            bank_balance=0,
         )
 
         return passenger
