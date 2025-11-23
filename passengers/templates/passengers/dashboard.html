@@ -19,6 +19,7 @@
             <th>To</th>
             <th>Cost</th>
             <th>Status</th>
+            <th>ID</th>
         </tr>
 
         {% for ticket in tickets %}
@@ -27,6 +28,7 @@
             <td>{{ ticket.destination.name }}</td>
             <td>{{ ticket.cost }}</td>
             <td>{{ ticket.get_status_display }}</td>
+            <td>{{ ticket.id }}</td>
         </tr>
         {% endfor %}
     </table>

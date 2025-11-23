@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Metro Ticket Scanner: Outgoing</title>
+  </head>
+  <body>
+    <h2>Outgoing</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Scan</button>
+    </form>
+
+    {% if message %}
+    <p style="color:black;">{{ message }}</p>
+    {% endif %}
+
+    <a href="{% url 'dashboard' %}">Go to Dashboard</a>
+    <form action="{% url 'passenger-logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+  </body>
+</html>
