@@ -7,6 +7,14 @@
   <body>
     <p>Purchase ticket:</p>
 
+    <h1>Create Ticket</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Create Ticket</button>
+    </form>
+
     <form method="post" action="{% url 'admin:logout' %}" style="display:inline;">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Log Out</button>
