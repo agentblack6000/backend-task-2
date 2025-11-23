@@ -9,5 +9,6 @@ urlpatterns = [
         redirect_authenticated_user=True), name="passenger-login"),
     path("logout/", auth_views.LogoutView.as_view(), name="passenger-logout"),
     path("dashboard/", views.dashboard, name="dashboard"),
-    path("dashboard/purchase", views.purchase, name="purchase")
+    path("dashboard/purchase", views.purchase, name="purchase"),
+    path("signup/", views.signup, name="signup"),
 ]

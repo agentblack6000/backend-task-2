@@ -2,12 +2,25 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Passenger, Ticket, Station
+from .signup_form import PassengerSignupForm
 
 def index(request):
     return render(request, "passengers/index.html")
 
 def login(request):
     return render(request, "passengers/index.html")
+
+def signup(request):
+    if request.method == "POST":
+        form = PassengerSignupForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("passenger-login")
+    else:
+        form = PassengerSignupForm()
+    
+    return render(request, "passengers/signup.html", {"form": form})
 
 @login_required
 def dashboard(request):

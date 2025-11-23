@@ -5,6 +5,11 @@
     <title>Metro Ticket Booking</title>
   </head>
   <body>
+
+    <h3>Hello {{ passenger.user.username }}</h3>
+
+    <h3>You currently have ${{ passenger.bank_balance }}</h3>
+
     <h3>Your Tickets</h3>
 
     {% if tickets %}
