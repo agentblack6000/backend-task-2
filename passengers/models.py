@@ -23,7 +23,6 @@ class Ticket(models.Model):
         ("expired", "Expired"),
     ]
 
-
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name="tickets")
     start_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="start_station")
     destination = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="destination_station")
@@ -31,7 +30,7 @@ class Ticket(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     def calculate_cost(self, start_station, destination_station):
-        return 10000
+        return 100
 
     def save(self, *args, **kwargs):
         self.cost = self.calculate_cost(self.start_station, self.destination)
@@ -39,3 +38,26 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f"{self.passenger.user.username}, {self.start_station.name} to {self.destination.name}"
+
+class Line(models.Model):
+    name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        status = "active" if self.is_active else "disabled"
+        return f"{self.name}, ({status})"
+
+class Connection(models.Model):
+    line = models.ForeignKey(Line, on_delete=models.CASCADE, related_name="connection")
+    start_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="connection_start")
+    destination_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="connection_destination")
+    distance = models.FloatField(help_text="Distance in km", default=5)
+    travel_time = models.PositiveIntegerField(help_text="time in minutes")
+    cost = models.DecimalField(max_digits=5, decimal_places=2, default=10)
+
+    class Meta:
+        unique_together = ("line", "start_station", "destination_station")
+    
+    def __str__(self):
+        return f"{self.start_station} to {self.destination_station}, {self.line.name}"
+

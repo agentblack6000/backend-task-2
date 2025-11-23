@@ -43,19 +43,19 @@ def purchase(request):
     }
 
     if request.method == "POST":
-        start_id = request.POST.get("start_station")
-        dest_id = request.POST.get("destination_station")
+        start_station_id = request.POST.get("start_station")
+        dest_station_id = request.POST.get("destination_station")
 
-        if start_id == dest_id:
+        if start_station_id == dest_station_id:
             return render(request, "passengers/purchase.html", {
                 "stations": stations,
                 "error": "Start and destination cannot be the same."
             })
 
-        start_station = Station.objects.get(id=start_id)
-        dest_station = Station.objects.get(id=dest_id)
+        start_station = Station.objects.get(id=start_station_id)
+        dest_station = Station.objects.get(id=dest_station_id)
 
-        temp_ticket = Ticket(passenger, start_station, dest_station)
+        temp_ticket = Ticket(passenger=passenger, start_station=start_station, destination=dest_station)
         cost = temp_ticket.calculate_cost(start_station, dest_station)
 
         if passenger.bank_balance < cost:
