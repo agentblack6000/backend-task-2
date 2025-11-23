@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Add Money</title>
+  </head>
+  <body>
+
+    <h2>Add some money</h2>
+
+    <p>Payment Gateway: Please be honest</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <label>Amount</label>
+        <input type="number" id="amount" name="amount" min="0" required placeholder="0.00">
+  
+        <button type="submit">Add</button>
+    </form>
+
+    </form>
+  </body>
+</html>

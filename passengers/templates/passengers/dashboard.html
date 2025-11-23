@@ -43,6 +43,10 @@
         <button type="submit">Purchase tickets</button>
     </form>
 
+    <p>Add balance</p>
+
+    <a href="{% url 'money' %}">Add money</a>
+
     <form action="{% url 'passenger-logout' %}" method="post">
         {% csrf_token %}
         <button type="submit">Logout</button>

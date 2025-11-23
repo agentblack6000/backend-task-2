@@ -73,3 +73,18 @@ def purchase(request):
 
 
     return render(request, "passengers/purchase.html", context)
+
+@login_required
+def add_money(request):
+    passenger = request.user.passenger
+
+    if request.method == "POST":
+        amount = request.POST.get("amount")
+        passenger.bank_balance += int(amount)
+        print("Amount", amount)
+        passenger.save()
+
+        return redirect("dashboard")
+
+    print("here")
+    return render(request, "passengers/money.html")
