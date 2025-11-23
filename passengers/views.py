@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Passenger, Ticket, Station
+from .models import Ticket, Station
 from .signup_form import PassengerSignupForm
+
+from decimal import Decimal
 
 def index(request):
     return render(request, "passengers/index.html")
@@ -58,6 +59,10 @@ def purchase(request):
         temp_ticket = Ticket(passenger=passenger, start_station=start_station, destination=dest_station)
         cost = temp_ticket.calculate_cost(start_station, dest_station)
 
+        if cost < 0:
+            context["error"] = "No metro lines operational that cover that route"
+            return render(request, "passengers/purchase.html", context)
+
         if passenger.bank_balance < cost:
             context["error"] = "Insufficent balance"
             return render(request, "passengers/purchase.html", context)
@@ -68,7 +73,6 @@ def purchase(request):
         temp_ticket.status = "active"
         temp_ticket.save()
 
-        messages.success(request, "Purchase successful")
         return redirect("dashboard")
 
 

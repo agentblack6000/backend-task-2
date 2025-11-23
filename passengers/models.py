@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from passengers.pathfinder import shortest_path
 
-# Create your models here.
 class Passenger(models.Model):
     bank_balance = models.DecimalField(max_digits=10, decimal_places=2)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -30,7 +30,12 @@ class Ticket(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     def calculate_cost(self, start_station, destination_station):
-        return 100
+        try:
+            cost, distance, stations_crossed = shortest_path(start_station, destination_station)
+        except ValueError:
+            return -1
+
+        return cost
 
     def save(self, *args, **kwargs):
         self.cost = self.calculate_cost(self.start_station, self.destination)
@@ -53,7 +58,7 @@ class Connection(models.Model):
     destination_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="connection_destination")
     distance = models.FloatField(help_text="Distance in km", default=5)
     travel_time = models.PositiveIntegerField(help_text="time in minutes")
-    cost = models.DecimalField(max_digits=5, decimal_places=2, default=10)
+    cost = models.DecimalField(max_digits=15, decimal_places=2, default=10)
 
     class Meta:
         unique_together = ("line", "start_station", "destination_station")
