@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Metro Ticket Scanner</title>
+  </head>
+  <body>
+    <p>Purchase ticket:</p>
+
+    <form method="post" action="{% url 'admin:logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Log Out</button>
+    </form>
+  </body>
+</html>

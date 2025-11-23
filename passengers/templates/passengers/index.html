@@ -9,10 +9,12 @@
 
     <form action="{% url 'passenger-login' %}" method="get">
       {% csrf_token %}
-    <button type="submit">Login</button>
-
-
+    <button type="submit">Passenger Login</button>
+    <br>
+    <a href="{% url 'scanner:index' %}">Ticket Scanner</a>
+    <br>
     <a href="/admin/login/" class="btn">Admin Login</a>
+    <br>
     <a href="signup/" class="btn">Sign Up</a>
 
     </form>

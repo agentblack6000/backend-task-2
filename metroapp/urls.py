@@ -22,4 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("passengers/", include("passengers.urls")),
     path("", lambda request: redirect("/passengers/")),
+    path("scanner/", include("scanner.urls"))
 ]
