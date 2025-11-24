@@ -107,16 +107,13 @@ def confirmation(request, ticket_id):
         user_otp = generate_otp()
         OTP.objects.create(user=passenger, code=user_otp)
         send_verification_email(request.user.email, user_otp)
-
-    if request.method == "POST":
+    elif request.method == "POST":
         form = OTPForm(request.POST)
         if form.is_valid():
             user_otp = form.cleaned_data['otp']
             otp_database_log = OTP.objects.filter(user=passenger, code=user_otp).last()
         
             if otp_database_log and otp_database_log.is_valid():
-                messages.success(request, 'OTP verified successfully!')
-                
                 ticket.status = "active"
                 passenger.bank_balance -= ticket.cost
 

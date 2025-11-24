@@ -6,10 +6,12 @@
     <div class="card shadow p-4" style="width: 400px;">
         <h2 class="text-center mb-4">Confirm Purchase</h2>
 
-        <p class="text-center">The ticket costs: {{ ticket.cost }}</p>
-
+        <p class="text-center">The ticket costs: ${{ ticket.cost }}</p>
+        <p class="text-center">The ticket is from: {{ ticket.start_station }} to {{ ticket.end_station }}</p>
+        
         <p class="text-center">An OTP has been sent to your email: {{ request.user.email }}</p>
-
+        <p class="text-center">You will be redirected to the dashboard on succesful purchase.</p>
+        
 
         <form method="post">
             {% csrf_token %}
@@ -30,10 +32,6 @@
             {% for message in messages %}
                 <div class="alert alert-danger text-center mt-3">{{ message }}</div>
             {% endfor %}
-        {% endif %}
-
-        {% if error %}
-                <div class="alert alert-danger text-center mt-3">{{ error }}</div>
         {% endif %}
     </div>
 </div>
