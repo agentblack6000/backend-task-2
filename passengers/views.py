@@ -2,10 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
-from .models import Ticket, Station
-from .signup_form import PassengerSignupForm
-
-from decimal import Decimal
+from .models import Ticket, Station, OTP
+from .forms import PassengerSignupForm, OTPForm
+from .otp_generation import generate_otp, send_verification_email
 
 def index(request):
     return render(request, "passengers/index.html")
@@ -74,13 +73,10 @@ def purchase(request):
             context["error"] = "Insufficent balance"
             return render(request, "passengers/purchase.html", context)
         
-        passenger.bank_balance -= cost
-        passenger.save()
-
-        temp_ticket.status = "active"
+        temp_ticket.status = "pending"
         temp_ticket.save()
 
-        return redirect("dashboard")
+        return redirect("confirmation", ticket_id=temp_ticket.id)
 
 
     return render(request, "passengers/purchase.html", context)
@@ -99,3 +95,36 @@ def add_money(request):
 
     print("here")
     return render(request, "passengers/money.html")
+
+@login_required
+def confirmation(request, ticket_id):
+    passenger = request.user.passenger
+    ticket = Ticket.objects.get(id=ticket_id)
+
+    form = OTPForm()
+
+    if request.method == "GET":
+        user_otp = generate_otp()
+        OTP.objects.create(user=passenger, code=user_otp)
+        send_verification_email(request.user.email, user_otp)
+
+    if request.method == "POST":
+        form = OTPForm(request.POST)
+        if form.is_valid():
+            user_otp = form.cleaned_data['otp']
+            otp_database_log = OTP.objects.filter(user=passenger, code=user_otp).last()
+        
+            if otp_database_log and otp_database_log.is_valid():
+                messages.success(request, 'OTP verified successfully!')
+                
+                ticket.status = "active"
+                passenger.bank_balance -= ticket.cost
+
+                passenger.save()
+                ticket.save()
+
+                return redirect("dashboard")
+            else:
+                messages.error(request, "Invalid or expired OTP")
+
+    return render(request, "passengers/confirmation.html", {"ticket": ticket, "form": form})

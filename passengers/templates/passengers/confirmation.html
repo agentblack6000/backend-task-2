@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Confirm Purchase{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow p-4" style="width: 400px;">
+        <h2 class="text-center mb-4">Confirm Purchase</h2>
+
+        <p class="text-center">The ticket costs: {{ ticket.cost }}</p>
+
+        <p class="text-center">An OTP has been sent to your email: {{ request.user.email }}</p>
+
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.otp.label_tag }}
+                {{ form.otp }}
+                {% if form.otp.errors %}
+                    <div class="text-danger small">
+                        {{ form.otp.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Confirm Purchase</button>
+        </form>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger text-center mt-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if error %}
+                <div class="alert alert-danger text-center mt-3">{{ error }}</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Passenger
+from .otp_generation import OTP_LENGTH
 
 class PassengerSignupForm(forms.ModelForm):
     username = forms.CharField(max_length=150)
@@ -30,3 +31,6 @@ class PassengerSignupForm(forms.ModelForm):
         )
 
         return passenger
+
+class OTPForm(forms.Form):
+    otp = forms.CharField(max_length=OTP_LENGTH, min_length=OTP_LENGTH, label="Enter OTP", widget=forms.TextInput())

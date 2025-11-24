@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 from passengers.pathfinder import shortest_path
+
+EXPIRYLIMIT = 10
 
 class Passenger(models.Model):
     bank_balance = models.DecimalField(max_digits=10, decimal_places=2)
@@ -18,6 +22,7 @@ class Station(models.Model):
 
 class Ticket(models.Model):
     STATUS_CHOICES = [
+        ("pending", "Pending"),
         ("in use", "In Use"),
         ("active", "Active"),
         ("expired", "Expired"),
@@ -27,7 +32,7 @@ class Ticket(models.Model):
     start_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="start_station")
     destination = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="destination_station")
     cost = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
     def calculate_cost(self, start_station, destination_station):
         try:
@@ -66,3 +71,10 @@ class Connection(models.Model):
     def __str__(self):
         return f"{self.start_station} to {self.destination_station}, {self.line.name}"
 
+class OTP(models.Model):
+    user = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return self.creation_date >= timezone.now() - timedelta(minutes=EXPIRYLIMIT)

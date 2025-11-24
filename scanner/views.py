@@ -27,6 +27,8 @@ def incoming(request):
                     message = "Already scanned"
                 elif ticket.status.lower() == "expired":
                     message = "Ticket expired"
+                elif ticket.status.lower() == "pending":
+                    message = "Payment pending"
                 else:
                     ticket.status = "In Use"
                     ticket.save()
@@ -56,6 +58,8 @@ def outgoing(request):
                     message = "Journey completed"
                 elif ticket.status.lower() == "active":
                     message = "Invalid, go to the incoming platform"
+                elif ticket.status.lower() == "pending":
+                    message = "Payment pending"
                 elif ticket.status == "Expired":
                     message = "Already scanned"
             except Ticket.DoesNotExist:
