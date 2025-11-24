@@ -3,8 +3,10 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from .models import Ticket, Station, OTP
-from .forms import PassengerSignupForm, OTPForm
+from .forms import PassengerSignupForm, OTPForm, AddMoneyForm
 from .otp_generation import generate_otp, send_verification_email
+
+from decimal import Decimal
 
 def index(request):
     return render(request, "passengers/index.html")
@@ -86,15 +88,20 @@ def add_money(request):
     passenger = request.user.passenger
 
     if request.method == "POST":
-        amount = request.POST.get("amount")
-        passenger.bank_balance += int(amount)
-        print("Amount", amount)
-        passenger.save()
+        form = AddMoneyForm(request.POST)
 
-        return redirect("dashboard")
+        if form.is_valid():
+            amount = Decimal(form.cleaned_data["amount"])
 
-    print("here")
-    return render(request, "passengers/money.html")
+            passenger.bank_balance += amount
+            passenger.save()
+
+            return redirect("dashboard")
+    else:
+        form = AddMoneyForm()
+
+
+    return render(request, "passengers/money.html", {"form": form})
 
 @login_required
 def confirmation(request, ticket_id):

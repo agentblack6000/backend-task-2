@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from .models import Passenger
 from .otp_generation import OTP_LENGTH
 
+from decimal import Decimal
+
 class PassengerSignupForm(forms.ModelForm):
     username = forms.CharField(max_length=150)
     email = forms.EmailField()
@@ -31,6 +33,12 @@ class PassengerSignupForm(forms.ModelForm):
         )
 
         return passenger
+
+class AddMoneyForm(forms.Form):
+    amount = forms.DecimalField(min_value=Decimal("0.01"), max_digits=6, decimal_places=2, label="Amount", widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "placeholder": "0.00"
+        }))
 
 class OTPForm(forms.Form):
     otp = forms.CharField(max_length=OTP_LENGTH, min_length=OTP_LENGTH, label="Enter OTP", widget=forms.TextInput())
