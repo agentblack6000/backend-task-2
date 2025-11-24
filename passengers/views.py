@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from .models import Ticket, Station
 from .signup_form import PassengerSignupForm
@@ -16,8 +18,13 @@ def signup(request):
         form = PassengerSignupForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect("passenger-login")
+            try:
+                form.save()
+                return redirect("passenger-login")
+            except IntegrityError as e:
+                messages.error(request, "Username/email already exists")
+        else:
+            messages.error(request, "Invalid form")
     else:
         form = PassengerSignupForm()
     

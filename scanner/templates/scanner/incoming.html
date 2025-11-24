@@ -1,25 +1,35 @@
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>Metro Ticket Scanner: Incoming</title>
-  </head>
-  <body>
-    <h2>Incoming</h2>
+{% extends "base.html" %}
+{% block title %}Incoming Scan{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height:75vh;">
+  <div class="card shadow p-4" style="max-width: 450px; width: 100%;">
+
+    <h2 class="text-center mb-4">Incoming Ticket Scan</h2>
+
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Scan</button>
+        <div class="mb-3">
+          {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Scan Ticket</button>
     </form>
 
     {% if message %}
-    <p style="color:black;">{{ message }}</p>
+    <div class="alert alert-info text-center mt-3">
+        {{ message }}
+    </div>
     {% endif %}
 
-    <a href="{% url 'dashboard' %}">Go to Dashboard</a>
-    <form action="{% url 'passenger-logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-  </body>
-</html>
+    <div class="mt-4 text-center">
+      <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100 mb-2">Go to Dashboard</a>
+
+      <form action="{% url 'passenger-logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger w-100">Logout</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,22 +1,16 @@
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>Metro Ticket Booking</title>
-  </head>
-  <body>
-    <p>Where do you want to go?</p>
+{% extends "base.html" %}
 
+{% block title %}Metro App{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center gap-3">
     <form action="{% url 'passenger-login' %}" method="get">
-      {% csrf_token %}
-    <button type="submit">Passenger Login</button>
-    <br>
-    <a href="{% url 'scanner:index' %}">Ticket Scanner</a>
-    <br>
-    <a href="/admin/login/" class="btn">Admin Login</a>
-    <br>
-    <a href="signup/" class="btn">Sign Up</a>
-
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-lg">Passenger Login</button>
     </form>
-  </body>
-</html>
+
+    <a href="{% url 'scanner:index' %}" class="btn btn-outline-secondary btn-lg">Ticket Scanner</a>
+    <a href="/admin/login/" class="btn btn-outline-dark btn-lg">Admin Login</a>
+    <a href="signup/" class="btn btn-success btn-lg">Sign Up</a>
+</div>
+{% endblock %}

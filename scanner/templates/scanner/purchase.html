@@ -1,27 +1,72 @@
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>Metro Ticket Scanner</title>
-  </head>
-  <body>
-    <p>Purchase ticket:</p>
+{% extends "base.html" %}
+{% block title %}Purchase Ticket{% endblock %}
 
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow p-4" style="width: 400px;">
+        <h2 class="text-center mb-4">Purchase Ticket</h2>
 
-    <h1>Create Ticket</h1>
+        {% if error %}
+        <div class="alert alert-danger text-center">
+            {{ error }}
+        </div>
+        {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Create Ticket</button>
-    </form>
+        <form method="post" novalidate>
+            {% csrf_token %}
 
-    <form method="post" action="{% url 'admin:logout' %}" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Log Out</button>
-    </form>
-  </body>
-</html>
+            <!-- Passenger field -->
+            <div class="mb-3">
+                <label class="form-label" for="id_passenger">{{ form.passenger.label }}</label>
+                <select name="passenger" id="id_passenger" class="form-control">
+                    {% for p in form.fields.passenger.queryset %}
+                        <option value="{{ p.id }}">{{ p }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.passenger.errors %}
+                    <div class="text-danger small">
+                        {{ form.passenger.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Start Station field -->
+            <div class="mb-3">
+                <label class="form-label" for="id_start_station">{{ form.start_station.label }}</label>
+                <select name="start_station" id="id_start_station" class="form-control">
+                    {% for s in form.fields.start_station.queryset %}
+                        <option value="{{ s.id }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.start_station.errors %}
+                    <div class="text-danger small">
+                        {{ form.start_station.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Destination field -->
+            <div class="mb-3">
+                <label class="form-label" for="id_destination">{{ form.destination.label }}</label>
+                <select name="destination" id="id_destination" class="form-control">
+                    {% for d in form.fields.destination.queryset %}
+                        <option value="{{ d.id }}">{{ d }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.destination.errors %}
+                    <div class="text-danger small">
+                        {{ form.destination.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Create Ticket</button>
+        </form>
+
+        <form method="post" action="{% url 'admin:logout' %}" class="mt-3">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger w-100">Log Out</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

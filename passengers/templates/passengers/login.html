@@ -1,21 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Passenger Login</title>
-</head>
-<body>
-    <h2>Passenger Login</h2>
+{% extends "base.html" %}
+{% block title %}Passenger Login{% endblock %}
 
-    {% if form.errors %}
-        <p style="color:red;">Invalid username or password.</p>
-    {% endif %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow p-4" style="width: 350px;">
+        <h2 class="text-center mb-4">Passenger Login</h2>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+        {% if form.errors %}
+        <div class="alert alert-danger text-center">
+            Invalid username or password.
+        </div>
+        {% endif %}
 
-        <button type="submit">Login</button>
-    </form>
+        <form method="post" novalidate>
+            {% csrf_token %}
 
-</body>
-</html>
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                {{ form.username }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+
+        <p class="mt-3 text-center mb-0">
+            Don't have an account?
+            <a href="{% url 'signup' %}">Sign Up</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,15 +1,16 @@
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>Metro Ticket Scanner</title>
-  </head>
-  <body>
-    <h2>Purchase new ticket</h2>
-    <a href="{% url 'scanner:offline' %}">Offline Ticket</a>
+{% extends "base.html" %}
+{% block title %}Ticket Scanner{% endblock %}
 
-    <h2>Scan exisiting ticket</h2>
-    <a href="{% url 'scanner:scanner' %}">Ticket Scanner</a>
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height:75vh;">
+  <div class="card shadow p-4 text-center" style="max-width: 500px; width:100%;">
 
-  </body>
-</html>
+    <h2 class="mb-4">Metro Ticket Scanner</h2>
+
+    <a href="{% url 'scanner:offline' %}" class="btn btn-primary w-100 mb-3">Purchase Offline Ticket</a>
+
+    <a href="{% url 'scanner:scanner' %}" class="btn btn-success w-100 mb-3">Scan Existing Ticket</a>
+
+  </div>
+</div>
+{% endblock %}

@@ -72,6 +72,9 @@ def purchase_offline(request):
             ticket = form.save(commit=False)
             ticket.status = "In Use"
 
+            if ticket.start_station == ticket.destination:
+                return render(request, "scanner/purchase.html", {"form": form, "error": "Select different stations."})
+
             try:
                 total_cost, total_distance, connections = shortest_path(ticket.start_station, ticket.destination)
                 ticket.cost = total_cost

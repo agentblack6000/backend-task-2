@@ -1,57 +1,50 @@
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>Metro Ticket Booking</title>
-  </head>
-  <body>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
 
-    <h3>Hello {{ passenger.user.username }}</h3>
+<div class="card shadow p-4 mb-4">
+  <h3>Hello, <strong>{{ passenger.user.username }}</strong></h3>
+  <p class="fs-5">Current Balance: <strong>${{ passenger.bank_balance }}</strong></p>
+</div>
 
-    <h3>You currently have ${{ passenger.bank_balance }}</h3>
 
-    <h3>Your Tickets</h3>
-
-    {% if tickets %}
-    <table border="1">
-        <tr>
-            <th>From</th>
-            <th>To</th>
-            <th>Cost</th>
-            <th>Status</th>
-            <th>ID</th>
-        </tr>
-
-        {% for ticket in tickets %}
-        <tr>
-            <td>{{ ticket.start_station.name }}</td>
-            <td>{{ ticket.destination.name }}</td>
-            <td>{{ ticket.cost }}</td>
-            <td>{{ ticket.get_status_display }}</td>
-            <td>{{ ticket.id }}</td>
-        </tr>
-        {% endfor %}
+<div class="card shadow p-4 mb-4">
+  <h4>Your Tickets</h4>
+  {% if tickets %}
+    <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>Cost</th>
+      <th>Status</th>
+      <th>ID</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for ticket in tickets %}
+    <tr>
+      <td>{{ ticket.start_station.name }}</td>
+      <td>{{ ticket.destination.name }}</td>
+      <td>${{ ticket.cost }}</td>
+      <td>{{ ticket.get_status_display }}</td>
+      <td>{{ ticket.id }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
     </table>
-
     {% else %}
-    <p>You have no tickets.</p>
-    {% endif %}
+    <p>No tickets found.</p>
+  {% endif %}
+</div>
 
 
-    <p>Purchase new tickets</p>
-
-    <form action="{% url 'purchase' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Purchase tickets</button>
-    </form>
-
-    <p>Add balance</p>
-
-    <a href="{% url 'money' %}">Add money</a>
-
-    <form action="{% url 'passenger-logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-  </body>
-</html>
+<div class="d-flex gap-3">
+  <a href="{% url 'purchase' %}" class="btn btn-primary">Purchase New Ticket</a>
+  <a href="{% url 'money' %}" class="btn btn-success">Add Money</a>
+  <form action="{% url 'passenger-logout' %}" method="post" class="d-inline">
+  {% csrf_token %}
+  <button class="btn btn-danger">Logout</button>
+  </form>
+</div>
+{% endblock %}
