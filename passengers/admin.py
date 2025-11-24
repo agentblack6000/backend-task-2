@@ -1,26 +1,53 @@
+"""
+Registers the Passenger, Ticket, Connection, and Line models
+For the Station model, some additional functionality:
+    View the number of tickets starting/ending at each station, provided the ticket is active
+    or in use.
+    The list of tickets associated with that station
+"""
 from django.contrib import admin
 from django.db import models
-from django.utils.html import format_html
 from .models import Station, Passenger, Ticket, Connection, Line
-# Register your models here.
 
+# The register decorator is used here since we have a custom class for the Station-admin interface
 @admin.register(Station)
 class StationAdmin(admin.ModelAdmin):
+    """
+    StationAdmin documentation
+    """
+    # Which columns to show for this model
     list_display = ["name", "ticket_count", "tickets_list"]
 
-    def ticket_count(self, obj):
-        """Returns the total number of tickets starting or ending at this station"""
-        count = Ticket.objects.filter(
-            models.Q(start_station=obj) | models.Q(destination=obj)
-        ).count()
-        return count
-    ticket_count.short_description = "Number of Tickets"
+    # When using a callable, a model method, or a ModelAdmin method, you can customize 
+    # the column’s title by wrapping the callable with admin's display() decorator
+    @admin.display(description="Active/In Use Ticket count")
+    def ticket_count(self, obj) -> int:
+        """
+        Returns the ticket count for all tickets that have start/end station as the given station
+        (represented by the obj, the instance of the Station), given the ticket status is active or
+        in use. 
+        """
 
-    def tickets_list(self, obj):
-        """Returns a bullet point list of tickets"""
+        # By default, filter uses AND operations which isn't always needed.
+        # models.Q (QueryExpression )structures a more complex query that can involve OR, NOT, 
+        # as well as AND operations. Here, it is used to query the tickets which have start/end
+        # stations as the given station, and are active or in use
+        count = Ticket.objects.filter(
+            (models.Q(start_station=obj) | models.Q(destination=obj)) & (models.Q(status="active") | models.Q(status="in use"))
+        ).count()
+
+        return count
+
+    @admin.display("Ticket Data")
+    def tickets_list(self, obj) -> str:
+        """
+        Returns a list of tickets
+        """
         tickets = Ticket.objects.filter(
             models.Q(start_station=obj) | models.Q(destination=obj)
         )
+
+        # Displays - if there are no tickets associated with that station
         if not tickets.exists():
             return "-"
         
@@ -28,9 +55,8 @@ class StationAdmin(admin.ModelAdmin):
             f"{t.passenger.user.username} ({t.start_station.name} to {t.destination.name})"
             for t in tickets
         ])
-    tickets_list.short_description = "Ticket Data"
 
-
+# Registers the remaining models:
 admin.site.register(Passenger)
 admin.site.register(Ticket)
 admin.site.register(Connection)
