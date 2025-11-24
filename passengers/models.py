@@ -7,7 +7,7 @@ from passengers.pathfinder import shortest_path
 EXPIRYLIMIT = 10
 
 class Passenger(models.Model):
-    bank_balance = models.DecimalField(max_digits=10, decimal_places=2)
+    bank_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
