@@ -1,6 +1,7 @@
 import heapq
 from decimal import Decimal
 
+
 def shortest_path(start_station, end_station):
     """
     Finds the shortest path from start_station to end_station using Dijkstra's algorithm.
@@ -57,7 +58,7 @@ def shortest_path(start_station, end_station):
                         neighbor,
                         conn_path + [conn_id],
                         path_stations + [neighbor],
-                    )
+                    ),
                 )
 
     raise ValueError(f"No route possible from {start_station} to {end_station}")

@@ -5,11 +5,14 @@ from .forms import TicketForm, TicketIncomingForm, TicketOutgoingForm
 from passengers.pathfinder import shortest_path
 from passengers.models import Ticket
 
+
 def index(request):
     return render(request, "scanner/index.html")
 
+
 def scan_tickets(request):
     return render(request, "scanner/scanner.html")
+
 
 @login_required
 def incoming(request):
@@ -19,9 +22,11 @@ def incoming(request):
 
         if form.is_valid():
             ticket_id = form.cleaned_data["ticket_id"]
-            
+
             try:
-                ticket = Ticket.objects.get(id=ticket_id, passenger=request.user.passenger)
+                ticket = Ticket.objects.get(
+                    id=ticket_id, passenger=request.user.passenger
+                )
 
                 if ticket.status.lower() == "in use":
                     message = "Already scanned"
@@ -40,6 +45,7 @@ def incoming(request):
 
     return render(request, "scanner/incoming.html", {"form": form, "message": message})
 
+
 @login_required
 def outgoing(request):
     message = ""
@@ -48,9 +54,11 @@ def outgoing(request):
 
         if form.is_valid():
             ticket_id = form.cleaned_data["ticket_id"]
-            
+
             try:
-                ticket = Ticket.objects.get(id=ticket_id, passenger=request.user.passenger)
+                ticket = Ticket.objects.get(
+                    id=ticket_id, passenger=request.user.passenger
+                )
 
                 if ticket.status == "In Use":
                     ticket.status = "Expired"
@@ -68,6 +76,7 @@ def outgoing(request):
         form = TicketOutgoingForm()
     return render(request, "scanner/outgoing.html", {"form": form, "message": message})
 
+
 @staff_member_required
 def purchase_offline(request):
     if request.method == "POST":
@@ -77,15 +86,28 @@ def purchase_offline(request):
             ticket.status = "In Use"
 
             if ticket.start_station == ticket.destination:
-                return render(request, "scanner/purchase.html", {"form": form, "error": "Select different stations."})
+                return render(
+                    request,
+                    "scanner/purchase.html",
+                    {"form": form, "error": "Select different stations."},
+                )
 
             try:
-                total_cost, total_distance, connections = shortest_path(ticket.start_station, ticket.destination)
+                total_cost, total_distance, connections = shortest_path(
+                    ticket.start_station, ticket.destination
+                )
                 ticket.cost = total_cost
             except ValueError:
                 # No route available
-                return render(request, "scanner/purchase.html", {"form": form, "error": "No operational lines between these stations."})
-            
+                return render(
+                    request,
+                    "scanner/purchase.html",
+                    {
+                        "form": form,
+                        "error": "No operational lines between these stations.",
+                    },
+                )
+
             ticket.save()
             return redirect(request.path)
     else:

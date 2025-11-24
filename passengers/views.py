@@ -8,13 +8,21 @@ from .otp_generation import generate_otp, send_verification_email
 
 from decimal import Decimal
 
+
 def index(request):
+    """Renders the login page"""
     return render(request, "passengers/index.html")
+
 
 def login(request):
+    """Renders the login page"""
     return render(request, "passengers/index.html")
 
+
 def signup(request):
+    """
+    Implements user sign up
+    """
     if request.method == "POST":
         form = PassengerSignupForm(request.POST)
 
@@ -28,11 +36,15 @@ def signup(request):
             messages.error(request, "Invalid form")
     else:
         form = PassengerSignupForm()
-    
+
     return render(request, "passengers/signup.html", {"form": form})
+
 
 @login_required
 def dashboard(request):
+    """
+    Renders the user dashboard, displaying all their tickets
+    """
     passenger = request.user.passenger
     tickets = passenger.tickets.all()
 
@@ -42,6 +54,7 @@ def dashboard(request):
     }
 
     return render(request, "passengers/dashboard.html", context)
+
 
 @login_required
 def purchase(request):
@@ -56,15 +69,21 @@ def purchase(request):
         dest_station_id = request.POST.get("destination_station")
 
         if start_station_id == dest_station_id:
-            return render(request, "passengers/purchase.html", {
-                "stations": stations,
-                "error": "Start and destination cannot be the same."
-            })
+            return render(
+                request,
+                "passengers/purchase.html",
+                {
+                    "stations": stations,
+                    "error": "Start and destination cannot be the same.",
+                },
+            )
 
         start_station = Station.objects.get(id=start_station_id)
         dest_station = Station.objects.get(id=dest_station_id)
 
-        temp_ticket = Ticket(passenger=passenger, start_station=start_station, destination=dest_station)
+        temp_ticket = Ticket(
+            passenger=passenger, start_station=start_station, destination=dest_station
+        )
         cost = temp_ticket.calculate_cost(start_station, dest_station)
 
         if cost < 0:
@@ -74,14 +93,14 @@ def purchase(request):
         if passenger.bank_balance < cost:
             context["error"] = "Insufficent balance"
             return render(request, "passengers/purchase.html", context)
-        
+
         temp_ticket.status = "pending"
         temp_ticket.save()
 
         return redirect("confirmation", ticket_id=temp_ticket.id)
 
-
     return render(request, "passengers/purchase.html", context)
+
 
 @login_required
 def add_money(request):
@@ -100,8 +119,8 @@ def add_money(request):
     else:
         form = AddMoneyForm()
 
-
     return render(request, "passengers/money.html", {"form": form})
+
 
 @login_required
 def confirmation(request, ticket_id):
@@ -117,9 +136,9 @@ def confirmation(request, ticket_id):
     elif request.method == "POST":
         form = OTPForm(request.POST)
         if form.is_valid():
-            user_otp = form.cleaned_data['otp']
+            user_otp = form.cleaned_data["otp"]
             otp_database_log = OTP.objects.filter(user=passenger, code=user_otp).last()
-        
+
             if otp_database_log and otp_database_log.is_valid():
                 ticket.status = "active"
                 passenger.bank_balance -= ticket.cost
@@ -131,4 +150,6 @@ def confirmation(request, ticket_id):
             else:
                 messages.error(request, "Invalid or expired OTP")
 
-    return render(request, "passengers/confirmation.html", {"ticket": ticket, "form": form})
+    return render(
+        request, "passengers/confirmation.html", {"ticket": ticket, "form": form}
+    )

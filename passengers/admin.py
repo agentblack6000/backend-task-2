@@ -15,25 +15,27 @@ class StationAdmin(admin.ModelAdmin):
     """
     StationAdmin documentation
     """
+
     # Which columns to show for this model
     list_display = ["name", "ticket_count", "tickets_list"]
 
-    # When using a callable, a model method, or a ModelAdmin method, you can customize 
+    # When using a callable, a model method, or a ModelAdmin method, you can customize
     # the column’s title by wrapping the callable with admin's display() decorator
     @admin.display(description="Active/In Use Ticket count")
     def ticket_count(self, obj) -> int:
         """
         Returns the ticket count for all tickets that have start/end station as the given station
         (represented by the obj, the instance of the Station), given the ticket status is active or
-        in use. 
+        in use.
         """
 
         # By default, filter uses AND operations which isn't always needed.
-        # models.Q (QueryExpression )structures a more complex query that can involve OR, NOT, 
+        # models.Q (QueryExpression )structures a more complex query that can involve OR, NOT,
         # as well as AND operations. Here, it is used to query the tickets which have start/end
         # stations as the given station, and are active or in use
         count = Ticket.objects.filter(
-            (models.Q(start_station=obj) | models.Q(destination=obj)) & (models.Q(status="active") | models.Q(status="in use"))
+            (models.Q(start_station=obj) | models.Q(destination=obj))
+            & (models.Q(status="active") | models.Q(status="in use"))
         ).count()
 
         return count
@@ -50,11 +52,14 @@ class StationAdmin(admin.ModelAdmin):
         # Displays - if there are no tickets associated with that station
         if not tickets.exists():
             return "-"
-        
-        return ", ".join([
-            f"{t.passenger.user.username} ({t.start_station.name} to {t.destination.name})"
-            for t in tickets
-        ])
+
+        return ", ".join(
+            [
+                f"{t.passenger.user.username} ({t.start_station.name} to {t.destination.name})"
+                for t in tickets
+            ]
+        )
+
 
 # Registers the remaining models:
 admin.site.register(Passenger)
