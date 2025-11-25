@@ -51,6 +51,9 @@ class PassengerSignupForm(forms.ModelForm):
         Every Django model has a save method, and since the PassengerSignupForm is based on the
         Passenger model, the save() method updates or creates a new instance of the Passenger in the
         database
+
+        The normal super().save() method would create this passenger without linking it to a User
+        first, which would cause problems
         """
         username = self.cleaned_data["username"]
         first_name = self.cleaned_data["first_name"]

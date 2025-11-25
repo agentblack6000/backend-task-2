@@ -1,12 +1,10 @@
 """
-Implements the views:
+Implements the views used in the app.
 
-index:
-login:
-signup:
-dashboard:
-purchase:
-add_money:
+The authentication decorator (login_required) is used to protect pages meant to have a user associated
+with them (ex. dashboard)
+IntegrityError is needed to catch users trying to reuse the same username/email
+Decimal is used when updating user bank balance
 """
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -34,8 +32,11 @@ def signup(request):
     Implements user sign up
     """
     if request.method == "POST":
+        # Associates the Django form with the request data
         form = PassengerSignupForm(request.POST)
 
+        # Performs validation, catches IntegrityError if the same username/email is 
+        # used twice
         if form.is_valid():
             try:
                 form.save()
@@ -68,6 +69,9 @@ def dashboard(request):
 
 @login_required
 def purchase(request):
+    """
+    Handles ticket purchasing
+    """
     passenger = request.user.passenger
     stations = Station.objects.all()
     context = {
@@ -114,14 +118,20 @@ def purchase(request):
 
 @login_required
 def add_money(request):
+    """
+    Enables users to add balance to their accounts
+    """
     passenger = request.user.passenger
 
     if request.method == "POST":
+        # Associates the Django form with the request data
         form = AddMoneyForm(request.POST)
 
+        # Checks if form is valid
         if form.is_valid():
             amount = Decimal(form.cleaned_data["amount"])
 
+            # Updates user bank balance
             passenger.bank_balance += amount
             passenger.save()
 
@@ -134,22 +144,32 @@ def add_money(request):
 
 @login_required
 def confirmation(request, ticket_id):
+    """
+    Confirms purchase on OTP verificatoin, deducts balance, marks ticket as active
+    """
     passenger = request.user.passenger
     ticket = Ticket.objects.get(id=ticket_id)
 
     form = OTPForm()
 
     if request.method == "GET":
+        # Generates and creates an OTP
         user_otp = generate_otp()
         OTP.objects.create(user=passenger, code=user_otp)
+
+        # Sends the verification email
         send_verification_email(request.user.email, user_otp)
     elif request.method == "POST":
         form = OTPForm(request.POST)
+
+        # Checks if form is valid
         if form.is_valid():
             user_otp = form.cleaned_data["otp"]
             otp_database_log = OTP.objects.filter(user=passenger, code=user_otp).last()
 
+            # Check if entered OTP exists and is valid
             if otp_database_log and otp_database_log.is_valid():
+                # Updates ticket status and deducts cost
                 ticket.status = "active"
                 passenger.bank_balance -= ticket.cost
 

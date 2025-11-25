@@ -3,7 +3,11 @@
 {% block content %}
 
 <div class="card shadow p-4 mb-4">
-  <h3>Hello, <strong>{{ passenger.user.username }}</strong></h3>
+  {% if passenger.user.get_full_name %}
+    <h3>Hello, <strong>{{ passenger.user.get_full_name }}</strong></h3>
+  {% else %}
+    <h3>Hello, <strong>{{ passenger.user.username }}</strong></h3>
+  {% endif %}
   <p class="fs-5">Current Balance: <strong>${{ passenger.bank_balance }}</strong></p>
 </div>
 

@@ -14,7 +14,7 @@ from .models import Station, Passenger, Ticket, Connection, Line
 class StationAdmin(admin.ModelAdmin):
     """
     Implements a custom Station-admin interface that displays all tickets associated with that
-    station provided the ticket is active or in use and the list of tickets associated with that 
+    station provided the ticket is active or in use and the list of tickets associated with that
     station
     """
 
