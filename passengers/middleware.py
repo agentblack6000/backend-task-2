@@ -22,5 +22,5 @@ class LogoutOnMissingPassengerMiddleware:
     def process_exception(self, request, exception):
         if isinstance(exception, ObjectDoesNotExist):
             logout(request)
-            return redirect("login")
+            return redirect("passenger-login")
         return None

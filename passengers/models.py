@@ -17,7 +17,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
-from passengers.pathfinder import shortest_path
+from passengers.breadth_first_search import shortest_path
 
 # OTP expiry limit in minutes
 EXPIRYLIMIT = 10
