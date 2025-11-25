@@ -1,3 +1,13 @@
+"""
+Implements the views:
+
+index:
+login:
+signup:
+dashboard:
+purchase:
+add_money:
+"""
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError

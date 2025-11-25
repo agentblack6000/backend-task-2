@@ -1,9 +1,25 @@
+"""
+Implementation of the models used to make the metroapp
+
+Passenger:
+Station:
+Ticket:
+Line:
+Connection:
+OTP:
+
+The db module is to implement the models
+The User is for Django's authentication
+The utils and datetime module are needed for OTP validation
+The pathfinder module finds the shortest path, needed for calculating the price
+"""
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 from passengers.pathfinder import shortest_path
 
+# OTP expiry limit in minutes
 EXPIRYLIMIT = 10
 
 

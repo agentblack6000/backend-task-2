@@ -1,5 +1,5 @@
 """
-Registers the Passenger, Ticket, Connection, and Line models
+Registers the Passenger, Ticket, Connection, and Line models to define the railway network
 For the Station model, some additional functionality:
     View the number of tickets starting/ending at each station, provided the ticket is active
     or in use.
@@ -13,11 +13,13 @@ from .models import Station, Passenger, Ticket, Connection, Line
 @admin.register(Station)
 class StationAdmin(admin.ModelAdmin):
     """
-    StationAdmin documentation
+    Implements a custom Station-admin interface that displays all tickets associated with that
+    station provided the ticket is active or in use and the list of tickets associated with that 
+    station
     """
 
     # Which columns to show for this model
-    list_display = ["name", "ticket_count", "tickets_list"]
+    list_display = ["name", "ticket_count", "tickets_overview"]
 
     # When using a callable, a model method, or a ModelAdmin method, you can customize
     # the column’s title by wrapping the callable with admin's display() decorator
@@ -40,10 +42,13 @@ class StationAdmin(admin.ModelAdmin):
 
         return count
 
-    @admin.display("Ticket Data")
-    def tickets_list(self, obj) -> str:
+    @admin.display(description="Ticket Data")
+    def tickets_overview(self, obj) -> str:
         """
-        Returns a list of tickets
+        Returns a comma separated list of all tickets connected to this station
+        ex:
+            "user (Station A to Station B), ..."
+        Returns '-' if no tickets exist
         """
         tickets = Ticket.objects.filter(
             models.Q(start_station=obj) | models.Q(destination=obj)
