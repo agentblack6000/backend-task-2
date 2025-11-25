@@ -5,11 +5,13 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 
+
 class LogoutOnMissingPassengerMiddleware:
     """
     Logs out users if a related object (like a passenger) is missing,
     then redirects them to the login page.
     """
+
     def __init__(self, get_response):
         self.get_response = get_response
 

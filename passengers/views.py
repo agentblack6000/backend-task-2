@@ -35,7 +35,7 @@ def signup(request):
         # Associates the Django form with the request data
         form = PassengerSignupForm(request.POST)
 
-        # Performs validation, catches IntegrityError if the same username/email is 
+        # Performs validation, catches IntegrityError if the same username/email is
         # used twice
         if form.is_valid():
             try:

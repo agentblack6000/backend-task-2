@@ -24,13 +24,14 @@ EXPIRYLIMIT = 10
 # OTP length is 6 digits
 OTP_LENGTH = 6
 
+
 class Passenger(models.Model):
     """
     Defines the Passenger model. Stores the bank balance as a DecimalField, to perform accurate
-    operations involving floating point numbers. 
-    
-    A one to one relationship is define between a User and a Passenger, i.e each User has atmost one 
-    Passenger and each Passenger has atmost one User. On deletion, the models.CASCADE deletes the User 
+    operations involving floating point numbers.
+
+    A one to one relationship is define between a User and a Passenger, i.e each User has atmost one
+    Passenger and each Passenger has atmost one User. On deletion, the models.CASCADE deletes the User
     if the Passenger is deleted.
     """
 
@@ -43,7 +44,7 @@ class Passenger(models.Model):
 
 
 class Station(models.Model):
-    """ 
+    """
     Defines the Station model, stores the name of the Station in a CharField.
     """
 
@@ -55,8 +56,8 @@ class Station(models.Model):
 
 
 class Ticket(models.Model):
-    """ 
-    Defines the Ticket model. The cost of each tickt is dynamically calculated based on the 
+    """
+    Defines the Ticket model. The cost of each tickt is dynamically calculated based on the
     start and end stations. The status field is confined to STATUS_CHOICES:
         active: Purchased online
         in use: Scanned at the incoming station, or purchased offline via the admin interface
@@ -70,7 +71,7 @@ class Ticket(models.Model):
         ForeignKey(Station, ...): i.e many tickets can be linked to one Station
     """
 
-    # The first value in the tuple is the value stored in the database, the second value is the 
+    # The first value in the tuple is the value stored in the database, the second value is the
     # human-readable label (for use in forms/admin page)
     STATUS_CHOICES = [
         ("pending", "Pending"),
@@ -112,11 +113,11 @@ class Ticket(models.Model):
         return cost
 
     def save(self, *args, **kwargs):
-        """ 
+        """
         Sets the dynamically calculated cost, and then saves to the database.
         The parent's save method, i.e super().save() is used here for convenience, in the forms we
         were dealing with multiple models (Passenger + User), so the create() was used there which
-        internally calls the save(). 
+        internally calls the save().
         """
         self.cost = self.calculate_cost(self.start_station, self.destination)
         super().save(*args, **kwargs)
@@ -127,7 +128,7 @@ class Ticket(models.Model):
 
 
 class Line(models.Model):
-    """ 
+    """
     Defines the Line model. When calculating the shortest path between 2 stations, the is_active is used
     to check if the Line is operational. Admins can mark lines as active or disabled in the admin interface.
     """
@@ -166,7 +167,7 @@ class Connection(models.Model):
     cost = models.DecimalField(max_digits=15, decimal_places=2, default=10)
 
     # The Meta class in Django controls the behavior of the model without being involved in the
-    # database. For instance, the unique_together will prevent entries if 2 connections have the 
+    # database. For instance, the unique_together will prevent entries if 2 connections have the
     # same Line, start, and destination.
     class Meta:
         # Ensures connections can't have the same line, start, and destination
@@ -181,6 +182,7 @@ class OTP(models.Model):
     """
     Defines the OTP model, needed for purchase confirmation.
     """
+
     user = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     code = models.CharField(max_length=OTP_LENGTH)
     creation_date = models.DateTimeField(auto_now_add=True)
