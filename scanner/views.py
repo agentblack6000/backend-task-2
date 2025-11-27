@@ -1,6 +1,6 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .forms import TicketForm, TicketIncomingForm, TicketOutgoingForm
 from passengers.pathfinder import shortest_path
 from passengers.models import Ticket
@@ -97,6 +97,16 @@ def purchase_offline(request):
                     ticket.start_station, ticket.destination
                 )
                 ticket.cost = total_cost
+                ticket.save()
+                blank_form = TicketForm()
+                return render(
+                    request,
+                    "scanner/purchase.html",
+                    {
+                        "form": blank_form,
+                        "success": "Purchased succesfully",
+                    },
+                )
             except ValueError:
                 # No route available
                 return render(
@@ -107,9 +117,6 @@ def purchase_offline(request):
                         "error": "No operational lines between these stations.",
                     },
                 )
-
-            ticket.save()
-            return redirect(request.path)
     else:
         form = TicketForm()
 

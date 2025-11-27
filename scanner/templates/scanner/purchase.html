@@ -12,6 +12,12 @@
         </div>
         {% endif %}
 
+        {% if success %}
+        <div class="text-center">
+            {{ success }}
+        </div>
+        {% endif %}
+
         <form method="post" novalidate>
             {% csrf_token %}
 
