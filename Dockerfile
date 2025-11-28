@@ -28,5 +28,5 @@ COPY . .
 # Sets the port the container will watch as 8000
 EXPOSE 8000
 
-# This starts the Django server (for local development)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# This starts gunicorn
+CMD ["gunicorn", "metroapp.wsgi:application", "--bind", "0.0.0.0:8000"]
