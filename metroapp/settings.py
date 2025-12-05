@@ -50,9 +50,26 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'anymail',
 ]
 
 SITE_ID = 2
+
+ANYMAIL = {
+    "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY"),
+    "MAILGUN_SENDER_DOMAIN": os.environ.get("MAILGUN_SANDBOX_DOMAIN"),
+}
+
+# Email set up
+
+EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
+DEFAULT_FROM_EMAIL=os.environ.get("MAILGUN_FROM_EMAIL")
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = os.environ.get("EMAIL_PORT")
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -169,12 +186,3 @@ LOGIN_URL = '/passengers/login/'
 
 LOGIN_REDIRECT_URL = '/passengers/dashboard/'
 LOGOUT_REDIRECT_URL = '/passengers/'
-
-# Email set up
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = os.environ.get("EMAIL_PORT")
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
