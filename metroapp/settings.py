@@ -39,7 +39,7 @@ CSRF_COOKIE_SECURE = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://ataari.tech",
-    "https://www.ataari.tech",
+#    "https://www.ataari.tech",
 ]
 
 
