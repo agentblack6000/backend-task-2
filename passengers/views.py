@@ -181,5 +181,5 @@ def confirmation(request, ticket_id):
                 messages.error(request, "Invalid or expired OTP")
 
     return render(
-        request, "passengers/confirmation.html", {"ticket": ticket, "form": form}
+        request, "passengers/confirmation.html", {"ticket": ticket, "form": form, "path": ticket.return_path()}
     )

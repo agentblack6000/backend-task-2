@@ -111,6 +111,22 @@ class Ticket(models.Model):
             return -1
 
         return cost
+    
+    def return_path(self):
+        try:
+            cost, distance, stations_crossed = shortest_path(
+                self.start_station, self.destination
+            )
+
+            if stations_crossed[0].destination_station == self.start_station:
+                for connection in stations_crossed:
+                    start = connection.start_station
+                    connection.start_station = connection.destination_station
+                    connection.destination_station = start
+        except ValueError:
+            return -1
+
+        return stations_crossed 
 
     def save(self, *args, **kwargs):
         """
