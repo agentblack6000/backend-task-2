@@ -27,7 +27,7 @@ services:
     image: nginx:1.29.3
     container_name: metroapp_nginx
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d:ro
+      - ./nginx/site.conf:/etc/nginx/conf.d:ro
       - certbot_www:/var/www/certbot
       - certbot_certs:/etc/letsencrypt
       - ./static:/app/static
