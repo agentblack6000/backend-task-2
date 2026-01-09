@@ -15,8 +15,8 @@ services:
     image: certbot/certbot
     container_name: metroapp_certbot
     volumes:
-      - certbot_www:/var/www/certbot
-      - certbot_certs:/etc/letsencrypt
+      - /srv/certbot_www:/var/www/certbot
+      - /srv/certbot_certs:/etc/letsencrypt
     entrypoint: >
       sh -c "trap exit TERM;
              while :; do
